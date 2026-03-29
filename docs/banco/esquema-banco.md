@@ -1,0 +1,61 @@
+# 🏦 Esquema Banco Carteira Investimentos (B3)
+
+```mermaid
+erDiagram
+    CLIENTES {
+        uuid id PK "ID"
+        string nome "Nome"
+        string documento "CPF/CNPJ"
+        string email "Email"
+        timestamp data_cadastro "Criado em"
+    }
+    
+    INSTITUICOES {
+        uuid id PK "ID"
+        string nome "Nome"
+        string cnpj "CNPJ"
+        string tipo "Tipo"
+    }
+    
+    CONTAS_CORRETORA {
+        uuid id PK "ID"
+        uuid cliente_id FK "Cliente"
+        uuid instituicao_id FK "Instituição"
+        string numero_conta "Conta"
+        string apelido "Apelido"
+    }
+    
+    TIPOS_INVESTIMENTO {
+        int id PK "ID"
+        string nome "Tipo (ACAO, FII...)"
+        string descricao "Descrição"
+    }
+    
+    ATIVOS {
+        uuid id PK "ID"
+        string codigo_negociacao "Código (PETR4)"
+        string nome_produto "Nome completo"
+        string isin "ISIN"
+        string cnpj_emissor_fundo "CNPJ emissor"
+        string tipo_papel "ON/PN/UNIT"
+        int tipo_investimento_id FK "Tipo"
+        string indexador "IPCA/PREFIXADO"
+        date data_emissao "Emissão"
+        date data_vencimento "Vencimento"
+    }
+    
+    POSICOES_DIARIAS {
+        uuid id PK "ID"
+        uuid conta_id FK "Conta"
+        uuid ativo_id FK "Ativo"
+        date data_referencia "Data posição"
+        numeric quantidade "Qtde"
+        numeric valor_atualizado "Valor atual"
+    }
+    
+    CLIENTES ||--o{ CONTAS_CORRETORA : possui
+    INSTITUICOES ||--o{ CONTAS_CORRETORA : mantem
+    TIPOS_INVESTIMENTO ||--o{ ATIVOS : classifica
+    ATIVOS ||--o{ POSICOES_DIARIAS : "tem posição"
+    CONTAS_CORRETORA ||--o{ POSICOES_DIARIAS : "da conta"
+```
