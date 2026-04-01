@@ -11,42 +11,32 @@ export default async function ClientesPage() {
 
   return (
     <div>
-      <h1>Clientes</h1>
-      <p>Cadastro de clientes do sistema.</p>
+      <h1 className="text-2xl font-bold text-sky-300 mb-2">Clientes</h1>
+      <p className="text-slate-300 mb-4">Cadastro de clientes do sistema.</p>
 
-      <div
-        style={{
-          marginTop: "24px",
-          background: "#fff",
-          borderRadius: "12px",
-          padding: "16px",
-          overflowX: "auto",
-        }}
-      >
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div className="table-wrapper">
+        <table className="modern-table">
           <thead>
-            <tr style={{ textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
-              <th style={{ padding: "12px" }}>Nome</th>
-              <th style={{ padding: "12px" }}>Documento</th>
-              <th style={{ padding: "12px" }}>Email</th>
-              <th style={{ padding: "12px" }}>Criado em</th>
+            <tr>
+              <th>Nome</th>
+              <th>Documento</th>
+              <th>Email</th>
+              <th>Criado em</th>
             </tr>
           </thead>
           <tbody>
-            {clientes.map((cliente: any) => (
-              <tr key={cliente.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
-                <td style={{ padding: "12px" }}>{cliente.nome}</td>
-                <td style={{ padding: "12px" }}>{cliente.documento || "-"}</td>
-                <td style={{ padding: "12px" }}>{cliente.email || "-"}</td>
-                <td style={{ padding: "12px" }}>
-                  {new Date(cliente.created_at).toLocaleString("pt-BR")}
-                </td>
+            {clientes.map((cliente: { id: string; nome: string; documento: string; email: string; created_at: string }) => (
+              <tr key={cliente.id}>
+                <td>{cliente.nome}</td>
+                <td>{cliente.documento || "-"}</td>
+                <td>{cliente.email || "-"}</td>
+                <td>{new Date(cliente.created_at).toLocaleString("pt-BR")}</td>
               </tr>
             ))}
 
             {clientes.length === 0 && (
               <tr>
-                <td colSpan={4} style={{ padding: "16px", textAlign: "center" }}>
+                <td colSpan={4} style={{ padding: "16px", textAlign: "center", color: "#94a3b8" }}>
                   Nenhum cliente cadastrado.
                 </td>
               </tr>
