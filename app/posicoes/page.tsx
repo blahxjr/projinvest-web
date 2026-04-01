@@ -49,7 +49,7 @@ export default async function PosicoesPage() {
             </tr>
           </thead>
           <tbody>
-            {posicoes.map((posicao: any) => (
+            {posicoes.map((posicao: { id: string; data_referencia: string; conta: string; codigo_negociacao: string | null; nome_produto: string; tipo_investimento: string | null; quantidade: number; preco_fechamento: number | null; valor_liquido: number | null }) => (
               <tr key={posicao.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
                 <td style={{ padding: "12px" }}>
                   {new Date(posicao.data_referencia).toLocaleDateString("pt-BR")}

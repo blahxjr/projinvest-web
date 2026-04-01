@@ -45,7 +45,27 @@ export default async function ClienteDetalhePage({ params }: PageProps) {
     [clienteId]
   );
 
-  const contas = contasResult.rows;
+  type Conta = {
+    id: string;
+    numero_conta: string;
+    apelido: string | null;
+    instituicao_nome: string;
+    created_at: string;
+  };
+
+  type Posicao = {
+    id: string;
+    data_referencia: string;
+    quantidade: number;
+    valor_liquido: number;
+    preco_fechamento: number;
+    conta: string;
+    codigo_negociacao: string | null;
+    nome_produto: string;
+    tipo_investimento: string | null;
+  };
+
+  const contas = contasResult.rows as Conta[];
 
   // 3) Posições do cliente
   const posicoesResult = await pool.query(
@@ -240,7 +260,7 @@ export default async function ClienteDetalhePage({ params }: PageProps) {
             </tr>
           </thead>
           <tbody>
-            {contas.map((conta: any) => (
+            {contas.map((conta: Conta) => (
               <tr key={conta.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
                 <td style={{ padding: "8px" }}>{conta.apelido || "-"}</td>
                 <td style={{ padding: "8px" }}>{conta.numero_conta}</td>
@@ -306,7 +326,7 @@ export default async function ClienteDetalhePage({ params }: PageProps) {
             </tr>
           </thead>
           <tbody>
-            {posicoes.map((p: any) => (
+            {posicoes.map((p: Posicao) => (
               <tr key={p.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
                 <td style={{ padding: "8px" }}>
                   {new Date(p.data_referencia).toLocaleDateString("pt-BR")}

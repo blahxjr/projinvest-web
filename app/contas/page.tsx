@@ -42,7 +42,7 @@ export default async function ContasPage() {
             </tr>
           </thead>
           <tbody>
-            {contas.map((conta: any) => (
+            {contas.map((conta: { id: string; numero_conta: string; apelido: string | null; cliente_nome: string; instituicao_nome: string; created_at: string }) => (
               <tr key={conta.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
                 <td style={{ padding: "12px" }}>{conta.apelido || "-"}</td>
                 <td style={{ padding: "12px" }}>{conta.numero_conta}</td>

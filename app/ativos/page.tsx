@@ -65,8 +65,12 @@ export default function NovoAtivoPage() {
 
       router.push("/ativos");
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || "Erro ao salvar ativo.");
+    } catch (err: unknown) {
+      const message =
+        err && typeof err === "object" && err !== null && "message" in err
+          ? (err as Error).message
+          : "Erro ao salvar ativo.";
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }

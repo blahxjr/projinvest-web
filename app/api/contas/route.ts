@@ -1,6 +1,8 @@
-import { NextResponse } from "next/server";
 import { pool } from "../../../lib/db";
 import { requireAuth } from "@/lib/authGuard";
+import { createAuditLog } from "@/lib/audit";
+import { contaSchema, ContaInput } from "@/lib/schemas";
+import { jsonResponse, errorResponse } from "@/lib/apiHelper";
 
 export async function GET(req: Request) {
   const auth = await requireAuth(req, ["ADMIN", "ADVISOR", "CLIENT"]);
@@ -13,20 +15,18 @@ export async function GET(req: Request) {
         cc.apelido,
         c.nome AS cliente_nome,
         i.nome AS instituicao_nome,
-        cc.created_at
+        cc.created_at,
+        cc.updated_at
       FROM contas_corretora cc
       JOIN clientes c ON c.id = cc.cliente_id
       JOIN instituicoes i ON i.id = cc.instituicao_id
       ORDER BY cc.created_at DESC
     `);
 
-    return NextResponse.json(result.rows, { status: 200 });
+    return jsonResponse(result.rows, 200);
   } catch (error) {
     console.error("Erro ao listar contas:", error);
-    return NextResponse.json(
-      { message: "Erro ao listar contas" },
-      { status: 500 }
-    );
+    return errorResponse("Erro ao listar contas", 500);
   }
 }
 
@@ -36,28 +36,45 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { clienteId, instituicaoId, numeroConta, apelido } = body;
+    const parsed = contaSchema.safeParse(body);
+    if (!parsed.success) {
+      return errorResponse(parsed.error.errors.map((e) => e.message).join('; '), 400);
+    }
 
-    if (!clienteId || !instituicaoId || !numeroConta) {
-      return NextResponse.json(
-        { message: "Cliente, instituição e número da conta são obrigatórios." },
-        { status: 400 }
-      );
+    const data: ContaInput = parsed.data;
+
+    const exists = await pool.query(
+      `SELECT id FROM contas_corretora WHERE cliente_id = $1 AND instituicao_id = $2 AND numero_conta = $3 LIMIT 1`,
+      [data.clienteId, data.instituicaoId, data.numeroConta.trim()]
+    );
+
+    if ((exists.rowCount ?? 0) > 0) {
+      return errorResponse("Conta já cadastrada para essa instituição e cliente.", 409);
     }
 
     const result = await pool.query(
       `INSERT INTO contas_corretora (cliente_id, instituicao_id, numero_conta, apelido)
        VALUES ($1, $2, $3, $4)
-       RETURNING id, cliente_id, instituicao_id, numero_conta, apelido, created_at`,
-      [clienteId, instituicaoId, numeroConta.trim(), apelido?.trim() || null]
+       RETURNING id, cliente_id, instituicao_id, numero_conta, apelido, created_at, updated_at`,
+      [data.clienteId, data.instituicaoId, data.numeroConta.trim(), data.apelido?.trim() || null]
     );
 
-    return NextResponse.json(result.rows[0], { status: 201 });
+    const created = result.rows[0];
+
+    await createAuditLog({
+      userId: auth.token?.sub as string | undefined,
+      userRole: auth.token?.role as string | undefined,
+      entity: "contas_corretora",
+      entityId: created.id,
+      action: "CREATE",
+      afterData: created,
+      ipAddress: req.headers.get("x-forwarded-for") ?? req.headers.get("host") ?? null,
+      userAgent: req.headers.get("user-agent") ?? null,
+    });
+
+    return jsonResponse(created, 201);
   } catch (error) {
     console.error("Erro ao criar conta:", error);
-    return NextResponse.json(
-      { message: "Erro ao criar conta" },
-      { status: 500 }
-    );
+    return errorResponse("Erro ao criar conta", 500);
   }
 }
