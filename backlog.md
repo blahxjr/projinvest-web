@@ -23,7 +23,7 @@
 - [✅] **TASK-002** Criar `middleware.ts` — proteção de rotas
   - Público: `/login`, `/cadastro`, `/esqueci-senha`
   - Protegido: `/(app)/*`
-- [ ] **TASK-003** Criar páginas de autenticação com UI refinada
+- [✅] **TASK-003** Criar páginas de autenticação com UI refinada
   - `/login`, `/cadastro`, `/esqueci-senha`
 - [ ] **TASK-004** Roles: `ADMIN`, `ADVISOR`, `CLIENT`
   - Coluna `role` na tabela `users`

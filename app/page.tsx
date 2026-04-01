@@ -23,37 +23,40 @@ export default async function Home() {
   const totalPosicoes = posicoesResult.rows[0]?.total ?? 0;
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <p>Sistema de gestão da carteira de investimentos.</p>
+    <main className="min-h-screen p-6 bg-slate-950 text-slate-100">
+      <section className="max-w-6xl mx-auto">
+        <header className="mb-6">
+          <h1 className="text-3xl font-bold text-sky-400">Dashboard</h1>
+          <p className="text-slate-300">Sistema de gestão da carteira de investimentos.</p>
+        </header>
 
-      <div style={{ display: "flex", gap: "16px", margin: "24px 0", flexWrap: "wrap" }}>
-        <div style={{ background: "#fff", padding: "16px", borderRadius: "12px", minWidth: "180px" }}>
-          <strong>Clientes</strong>
-          <div>{totalClientes}</div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div className="rounded-xl border border-white/10 bg-slate-800 p-4 shadow-lg">
+            <p className="text-sm text-slate-400">Clientes</p>
+            <p className="text-3xl font-bold">{totalClientes}</p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-slate-800 p-4 shadow-lg">
+            <p className="text-sm text-slate-400">Ativos</p>
+            <p className="text-3xl font-bold">{totalAtivos}</p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-slate-800 p-4 shadow-lg">
+            <p className="text-sm text-slate-400">Posições</p>
+            <p className="text-3xl font-bold">{totalPosicoes}</p>
+          </div>
         </div>
 
-        <div style={{ background: "#fff", padding: "16px", borderRadius: "12px", minWidth: "180px" }}>
-          <strong>Ativos</strong>
-          <div>{totalAtivos}</div>
-        </div>
-
-        <div style={{ background: "#fff", padding: "16px", borderRadius: "12px", minWidth: "180px" }}>
-          <strong>Posições</strong>
-          <div>{totalPosicoes}</div>
-        </div>
-      </div>
-
-      <div style={{ background: "#fff", padding: "16px", borderRadius: "12px" }}>
-        <h2>Tipos de investimento</h2>
-        <ul>
-          {tipos.map((tipo: any) => (
-            <li key={tipo.id}>
-              {tipo.nome} - {tipo.descricao}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+        <section className="rounded-xl border border-white/10 bg-slate-800 p-6 shadow-lg">
+          <h2 className="text-xl font-semibold text-sky-300 mb-3">Tipos de investimento</h2>
+          <ul className="space-y-2">
+            {tipos.map((tipo: any) => (
+              <li key={tipo.id} className="rounded-lg border border-white/5 bg-slate-900 p-3">
+                <span className="font-semibold text-slate-100">{tipo.nome}</span>
+                <span className="text-slate-400"> - {tipo.descricao}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </section>
+    </main>
   );
 }
