@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import type { NextAuthOptions, Session, User } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import type { Adapter } from "next-auth/adapters";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
@@ -56,15 +57,27 @@ const authOptions = {
     strategy: "database" as const,
   },
   callbacks: {
-    async session({ session, user }: { session: Session; user?: User & { role?: string } }) {
-      if (session.user && user) {
-        const enrichedUser = {
-          ...session.user,
-          id: user.id,
-          role: user.role,
-          image: user.image ?? session.user.image,
+    async jwt({ token, user }: { token: JWT; user?: User }) {
+      const role = (user as { role?: string } | undefined)?.role;
+      if (role) {
+        return {
+          ...token,
+          role,
         };
-        session.user = enrichedUser as Session["user"];
+      }
+      return token;
+    },
+    async session({ session, token }: { session: Session; token: JWT }) {
+      if (session.user) {
+        const currentUser = session.user as Session["user"] & { role?: string; id?: string };
+        const tokenWithRole = token as JWT & { role?: string; picture?: string | null };
+
+        session.user = {
+          ...currentUser,
+          id: tokenWithRole.sub ?? currentUser.id,
+          role: tokenWithRole.role ?? currentUser.role,
+          image: tokenWithRole.picture ?? session.user.image,
+        } as Session["user"];
       }
       return session;
     },

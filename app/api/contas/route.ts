@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { pool } from "../../../lib/db";
+import { requireAuth } from "@/lib/authGuard";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const auth = await requireAuth(req, ["ADMIN", "ADVISOR", "CLIENT"]);
+  if (!auth.authorized) return auth.response!;
   try {
     const result = await pool.query(`
       SELECT
@@ -28,6 +31,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const auth = await requireAuth(req, ["ADMIN", "ADVISOR"]);
+  if (!auth.authorized) return auth.response!;
+
   try {
     const body = await req.json();
     const { clienteId, instituicaoId, numeroConta, apelido } = body;

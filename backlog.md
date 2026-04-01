@@ -25,7 +25,7 @@
   - Protegido: `/(app)/*`
 - [✅] **TASK-003** Criar páginas de autenticação com UI refinada
   - `/login`, `/cadastro`, `/esqueci-senha`
-- [ ] **TASK-004** Roles: `ADMIN`, `ADVISOR`, `CLIENT`
+- [✅] **TASK-004** Roles: `ADMIN`, `ADVISOR`, `CLIENT`
   - Coluna `role` na tabela `users`
   - Guard nos endpoints de API
 - [ ] **TASK-005** Headers de segurança no `next.config.ts`

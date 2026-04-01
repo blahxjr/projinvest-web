@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { pool } from "../../../lib/db";
+import { requireAuth } from "@/lib/authGuard";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const auth = await requireAuth(req, ["ADMIN", "ADVISOR", "CLIENT"]);
+  if (!auth.authorized) return auth.response!;
+
   try {
     const result = await pool.query(
       `SELECT id, nome FROM instituicoes ORDER BY nome ASC`
