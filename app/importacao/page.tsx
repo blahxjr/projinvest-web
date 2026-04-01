@@ -44,6 +44,7 @@ export default function ImportacaoPage() {
       const data: UploadResposta = await response.json();
       setResultado(data);
     } catch (error) {
+      console.error(error);
       setResultado({
         ok: false,
         error: "Erro inesperado ao enviar o arquivo.",

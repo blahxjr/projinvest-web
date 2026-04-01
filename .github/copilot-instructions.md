@@ -1,260 +1,397 @@
-# PROJINVEST — Instruções para GitHub Copilot
+# Copilot Instructions — ProjInvest Web
 
-## Contexto do Projeto
+## Propósito do projeto
+O ProjInvest é um sistema web de gestão patrimonial para consolidar, controlar e analisar todos os ativos de uma pessoa em um único ambiente. O sistema deve centralizar ativos mantidos em bancos, corretoras, contas internacionais, autocustódia e ativos alternativos, incluindo ações, FIIs, ETFs, BDRs, renda fixa, fundos, imóveis, veículos, joias e outros bens patrimoniais.
 
-PROJINVEST é um sistema web de gestão de investimentos pessoais e patrimoniais, voltado para o mercado brasileiro e internacional. O objetivo é escriturar todos os tipos de investimento de uma pessoa, oferecer diagnósticos, sugerir distribuição e rebalanceamento de carteiras, e gerar documentos personalizáveis (suitability, contratos).
+O objetivo principal é entregar um produto funcional, seguro, elegante e confiável para uso contínuo, com foco em:
+- visão consolidada do patrimônio;
+- histórico de movimentações e eventos;
+- controle por instituição, conta, ativo e categoria;
+- importação e conferência de dados;
+- rastreabilidade de alterações;
+- prevenção de duplicidade;
+- experiência premium e responsiva.
 
----
+## Referência visual e experiência
+A experiência visual deve ser inspirada na Área do Investidor da B3, sem copiar código, estrutura proprietária ou conteúdo. A inspiração deve se refletir em:
+- visual institucional, confiável e premium;
+- navegação clara e estável;
+- alta legibilidade de KPIs, tabelas e extratos;
+- foco em portfolio, movimentações, rendimentos, eventos e histórico;
+- organização orientada a patrimônio consolidado;
+- visual moderno, sóbrio, refinado e responsivo.
 
-## Stack Tecnológica
+A interface deve transmitir segurança, clareza e solidez. Evite aparência genérica de template e evite decisões visuais chamativas sem propósito funcional.
 
-- **Framework**: Next.js 15+ (App Router, TypeScript)
-- **Banco de Dados**: PostgreSQL (pg / Drizzle ORM)
-- **Estilização**: Tailwind CSS v4 + shadcn/ui
-- **Autenticação**: NextAuth.js v5 (Auth.js) com providers: Credentials, Google
-- **Animações**: Framer Motion
-- **Gráficos**: Recharts
-- **Formulários**: React Hook Form + Zod
-- **Geração de Documentos**: @react-pdf/renderer
-- **Tabelas**: TanStack Table v8
-- **Estado global**: Zustand
-- **Deploy**: Vercel
-- **Variáveis de ambiente**: `.env.local` (nunca commitar)
+## Direção de produto
+O sistema deve permitir controlar todos os ativos de uma pessoa em diversos bancos e corretoras, além de ativos fora do mercado tradicional. O domínio deve tratar como entidades de primeira classe:
+- clientes e usuários;
+- instituições financeiras;
+- contas por instituição;
+- ativos listados;
+- ativos de renda fixa;
+- fundos;
+- ativos internacionais;
+- imóveis;
+- veículos;
+- joias e bens diversos;
+- movimentações;
+- eventos patrimoniais;
+- documentos;
+- configurações;
+- trilhas de auditoria.
 
----
+Toda implementação deve reforçar a ideia de “visão 360 do patrimônio”.
 
-## Arquitetura
+## Prioridades do agente
+Ao decidir a ordem de trabalho, siga esta prioridade:
+1. segurança, autenticação e integridade dos dados;
+2. layout base, design system e estrutura de navegação;
+3. componentes reutilizáveis;
+4. backend e regras de negócio;
+5. prevenção de duplicidade e trilha de auditoria;
+6. módulos principais de ativos e movimentações;
+7. dashboard consolidado e relatórios;
+8. refinamento visual, performance e acessibilidade.
 
-```
-projinvest-web/
-├── app/
-│   ├── (auth)/                 # login, cadastro, recuperação
-│   ├── (app)/                  # rotas protegidas (autenticadas)
-│   │   ├── dashboard/
-│   │   ├── portfolio/
-│   │   ├── investimentos/
-│   │   │   ├── acoes/
-│   │   │   ├── renda-fixa/
-│   │   │   ├── cdb/
-│   │   │   ├── fundos/
-│   │   │   ├── debentures/
-│   │   │   ├── etfs/
-│   │   │   ├── ouro-metais/
-│   │   │   ├── imoveis/
-│   │   │   ├── veiculos/
-│   │   │   └── joias/
-│   │   ├── contas/
-│   │   ├── diagnostico/
-│   │   ├── rebalanceamento/
-│   │   ├── documentos/
-│   │   ├── importacao/
-│   │   └── configuracoes/
-│   ├── api/
-│   ├── layout.tsx
-│   └── globals.css
-├── components/
-│   ├── ui/                     # shadcn/ui base
-│   ├── charts/                 # Recharts wrappers
-│   ├── forms/                  # Formulários por domínio
-│   ├── tables/                 # TanStack Table wrappers
-│   └── layout/                 # Header, Sidebar, Footer
-├── lib/
-│   ├── db.ts                   # Pool PostgreSQL
-│   ├── auth.ts                 # NextAuth config
-│   ├── validations/            # Schemas Zod
-│   └── utils/
-├── hooks/                      # Custom hooks React
-├── stores/                     # Zustand stores
-├── types/                      # TypeScript types globais
-├── migrations/                 # SQL migrations
-├── docs/progresso.md
-└── backlog.md
-```
+## Comportamento obrigatório antes de alterar código
+Antes de implementar qualquer tarefa:
+1. entender claramente o objetivo da demanda;
+2. revisar os arquivos afetados;
+3. identificar impactos em frontend, backend, banco e segurança;
+4. quebrar o trabalho em tarefa principal e subtarefas;
+5. declarar critérios de aceite;
+6. apontar riscos, dependências e possíveis efeitos colaterais;
+7. só então começar a implementação.
 
----
+Se houver ambiguidade, inconsistência de regras ou risco de regressão, esclareça antes de prosseguir.
 
-## Identidade Visual
+Nunca faça mudanças grandes e silenciosas. Trabalhe em etapas pequenas, seguras, coerentes e verificáveis.
 
-### Paleta de Cores (Finance Dark Theme)
-```css
---primary:        #0EA5E9   /* sky-500 — azul financeiro */
---primary-dark:   #0284C7   /* sky-600 */
---accent:         #10B981   /* emerald-500 — crescimento/lucro */
---danger:         #EF4444   /* red-500 — prejuízo */
---warning:        #F59E0B   /* amber-500 — atenção */
---surface:        #0F172A   /* slate-900 — fundo escuro */
---surface-2:      #1E293B   /* slate-800 — cards */
---surface-3:      #334155   /* slate-700 — elementos */
---text:           #F1F5F9   /* slate-100 */
---text-muted:     #94A3B8   /* slate-400 */
-```
+## Arquitetura esperada
+Este projeto deve manter separação clara entre camadas:
+- frontend: telas, layouts, componentes, estados visuais, formulários, UX e acessibilidade;
+- backend: autenticação, autorização, validações, serviços, regras de negócio, deduplicação e auditoria;
+- persistência: PostgreSQL, migrations, índices, constraints, logs e histórico.
 
-### Fontes
-- **Display**: `Bricolage Grotesque` — títulos, KPIs grandes
-- **Body**: `Geist` ou `Inter` — texto corrido, tabelas, labels
-- Variáveis CSS: `--font-display` e `--font-body`
+Sempre prefira:
+- TypeScript estrito;
+- componentes pequenos e reutilizáveis;
+- serviços de domínio claros;
+- validação client-side e server-side;
+- regras críticas protegidas no backend e no banco;
+- migrations aditivas e seguras;
+- contratos explícitos de entrada e saída;
+- tratamento previsível de erros.
 
-### Tom de Design
-- Dark mode como padrão; light mode opcional com toggle
-- Inspiração: Linear, Vercel Dashboard, Firi Finance, Robinhood
-- Cards com `backdrop-blur` e bordas sutis (`border border-white/5`)
-- Animações de entrada com Framer Motion (`opacity + translateY`)
-- Números financeiros: `tabular-nums` + `Intl.NumberFormat('pt-BR')`
-- KPIs com variação percentual e seta direcional (▲ emerald / ▼ red)
+## Estilo de layout e design system
+O layout deve ser moderno, elegante, institucional e responsivo. A base visual deve seguir estes princípios:
+- sidebar para navegação principal;
+- header com contexto da página, breadcrumbs, ações e perfil;
+- dashboard executivo com KPIs, gráficos, alertas e tabelas;
+- páginas de listagem com filtros, busca, paginação e ações rápidas;
+- páginas de detalhe com visão resumida, histórico e auditoria;
+- formulários claros, organizados e com validação útil;
+- suporte a dark mode e light mode;
+- paleta padrão definida pela IA, mas com opção de personalização pelo usuário.
 
----
+O sistema pode definir um tema padrão inicial, mas deve prever:
+- troca de tema claro/escuro;
+- escolha de cor primária pelo usuário;
+- preferência visual persistente;
+- consistência visual entre todas as telas.
 
-## Tipos de Investimento Suportados
+A interface deve priorizar:
+- boa leitura de números financeiros;
+- contraste adequado;
+- densidade confortável em telas amplas;
+- adaptação real para mobile;
+- feedback visual refinado;
+- estados de loading, empty state e error state em todas as áreas relevantes.
 
-| Categoria | Tipos | Fonte |
-|---|---|---|
-| Renda Variável | Ações BR/EUA, BDRs, ETFs, FIIs, FIAGROs | B3 CSV / API |
-| Renda Fixa | CDB, LCI, LCA, LC, CRI, CRA | Manual |
-| Renda Fixa | Tesouro Direto, Debêntures, Fundos RF | Manual |
-| Fundos | Ações, Multimercado, Imobiliário, RF | Manual |
-| Metais | Ouro, Prata, Platina, Paládio, Cobre | Manual |
-| Alternativos | Imóveis, Veículos, Joias, Arte | Manual |
-| Internacional | Stocks EUA, ETFs, REITs, Bonds | Manual |
+## Regras funcionais obrigatórias
+O sistema deve contemplar ou preparar a base para:
+- login de acesso;
+- controle de sessão;
+- cadastro e gestão de usuários;
+- gestão de clientes;
+- múltiplas instituições e múltiplas contas por cliente;
+- cadastro e controle de ativos diversos;
+- registro de movimentações;
+- cálculo e consolidação patrimonial;
+- importação de dados com validação;
+- relatórios e documentos;
+- histórico de alterações;
+- personalização visual;
+- logs e auditoria.
 
----
+Ao implementar qualquer funcionalidade, considerar sempre:
+- integridade dos dados;
+- rastreabilidade;
+- legibilidade da experiência;
+- segurança por padrão.
 
-## Funcionalidades Principais
+## Login, autenticação e autorização
+O sistema precisa obrigatoriamente ter login de acesso e proteção de áreas privadas. Toda rota protegida deve exigir autenticação válida.
 
-### 1. Escrituração de Investimentos
-- CRUD completo para cada tipo de investimento
-- Importação via CSV (B3, Inter, XP, BTG, Rico)
-- Vinculação a contas em bancos/corretoras BR e internacionais
-- Histórico de transações (compra, venda, dividendo, JCP, cupom, etc.)
+Regras:
+- implementar autenticação segura;
+- aplicar controle por papéis e permissões;
+- proteger rotas no frontend e no backend;
+- não confiar apenas em validação de interface;
+- impedir acesso indevido por manipulação de URL ou chamada direta de endpoint;
+- tratar falhas de autenticação e autorização com mensagens seguras.
 
-### 2. Carteira Consolidada (`/portfolio`)
-- Visão geral de todos os ativos unificados
-- Groupby: tipo, corretora, moeda
-- Valor em R$ e USD com câmbio configurável
-- % de alocação por categoria
-- Gráficos: pizza, treemap, linha de evolução patrimonial
+Sempre validar permissões no servidor.
 
-### 3. Diagnóstico e Rebalanceamento
-- Questionário suitability (Conservador, Moderado, Arrojado, Agressivo)
-- Comparativo alocação atual vs. ideal por perfil
-- Cálculo delta: quanto comprar/vender por categoria
-- Alertas: concentração excessiva, vencimento próximo, cotação abaixo do PM
+## Segurança obrigatória
+Segurança é requisito central. Sempre aplicar:
+- validação rigorosa de entrada no backend;
+- sanitização e normalização de dados;
+- headers de segurança;
+- rate limiting em autenticação e rotas sensíveis;
+- tratamento de erros sem expor detalhes internos;
+- proteção contra duplicidade, reenvio e inconsistência de dados;
+- proteção contra operações sem permissão;
+- segregação clara de responsabilidades entre usuário comum, assessor e administrador;
+- armazenamento seguro de credenciais e segredos;
+- nenhuma credencial hardcoded no código.
 
-### 4. Geração de Documentos (`/documentos`)
-- Suitability em PDF com dados do cliente e perfil
-- Extrato consolidado da carteira
-- Contrato de gestão com campos dinâmicos
-- Parâmetros configuráveis: logo, nome assessor, CNPJ, CVM
+Nunca registrar em logs:
+- senhas;
+- tokens completos;
+- chaves privadas;
+- segredos;
+- dados sensíveis desnecessários.
 
-### 5. Autenticação e Segurança
-- Login email/senha (bcrypt) + Google OAuth
-- JWT + NextAuth sessions
-- Roles: ADMIN, ADVISOR, CLIENT
-- Row-level security: cada usuário acessa apenas seus dados
-- Rate limiting nas APIs de auth
-- Headers de segurança (HSTS, CSP, X-Frame-Options)
+Se dados sensíveis precisarem aparecer em logs operacionais, mascarar.
 
----
+## Integridade, deduplicação e consistência
+Evitar duplicidade é requisito obrigatório do produto. Nunca confie apenas na interface para isso.
 
-## Padrões de Código
+Sempre implementar defesa em camadas:
+- normalização dos dados recebidos;
+- validação no formulário;
+- validação no backend;
+- checagem de registros existentes antes de gravar;
+- constraints e índices no banco;
+- chaves compostas quando necessário;
+- idempotência em importações e operações repetíveis;
+- mensagens claras em caso de conflito.
 
-### TypeScript
-- Strict mode ativado (`strict: true` no tsconfig)
-- Interfaces para todos os tipos de domínio em `/types`
-- `never` para exhaustive switch cases
-- Evitar `any`; usar `unknown` quando necessário
+Exemplos de cuidado:
+- impedir cadastros duplicados da mesma conta para o mesmo cliente e instituição;
+- impedir importação repetida da mesma movimentação;
+- impedir ativos equivalentes duplicados por diferença de formatação;
+- impedir concorrência que gere registros repetidos.
 
-### Componentes React
-- Server Components por padrão; `'use client'` apenas para interatividade
-- Props tipadas com interface explícita
-- Memoização (`useMemo`, `useCallback`) somente quando necessário
+Toda rotina crítica deve considerar consistência transacional.
 
-### API Routes
-- REST pattern: `GET /api/investimentos/acoes`, `POST /api/investimentos/acoes`
-- Retorno padrão: `{ data, error, meta }`
-- Validação de input com Zod em TODAS as rotas
-- Try/catch em todas as chamadas ao banco
-- HTTP status codes corretos (200, 201, 400, 401, 403, 404, 500)
+## Auditoria e logs de alteração
+O sistema deve possuir logs de alteração de registro e trilha de auditoria confiável.
 
-### Banco de Dados
-- Migrations em `/migrations/` (SQL puro numerados: `001_users.sql`)
-- Índices em todas as FKs e colunas de busca frequente
-- UUIDs para IDs de negócio
-- `created_at`, `updated_at` em todas as tabelas
-- Soft delete com `deleted_at` onde aplicável
+Toda ação relevante deve ser auditável, incluindo:
+- login e logout;
+- tentativas de autenticação com falha;
+- criação de registros;
+- edição de registros;
+- exclusão lógica ou física;
+- importações;
+- ajustes manuais;
+- mudanças de configuração;
+- ações administrativas;
+- conflitos de deduplicação;
+- falhas de integração ou processamento.
 
-### Estilização
-- Tailwind classes; sem inline styles
-- Variantes de estado com `data-*` attributes ou `cn()` do shadcn
-- Mobile-first: breakpoints `sm: md: lg: xl:`
-- Nunca usar cores hardcoded; sempre tokens CSS ou classes Tailwind
+Cada evento de auditoria deve registrar, quando aplicável:
+- usuário responsável;
+- perfil do usuário;
+- entidade alterada;
+- id do registro;
+- tipo da ação;
+- data e hora;
+- origem da requisição;
+- resumo antes/depois;
+- resultado da operação.
 
----
+Os logs devem ser estruturados, pesquisáveis e seguros.
 
-## Formatação de Valores Financeiros
+## Banco de dados
+Toda mudança de banco deve ser feita com migration aditiva, segura e rastreável.
 
-```typescript
-// Moeda BRL
-export const formatBRL = (v: number) =>
-  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+Sempre considerar:
+- foreign keys;
+- unique constraints;
+- índices;
+- colunas de auditoria;
+- timestamps;
+- soft delete quando apropriado;
+- compatibilidade com dados já existentes;
+- rollback seguro sempre que possível.
 
-// Moeda USD
-export const formatUSD = (v: number) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v);
+Ao alterar schema:
+1. criar migration;
+2. atualizar tipos e contratos;
+3. adaptar serviços do backend;
+4. adaptar frontend;
+5. validar impacto em fluxos existentes;
+6. revisar riscos de duplicidade e auditoria.
 
-// Percentual
-export const formatPct = (v: number) =>
-  new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2 }).format(v / 100);
+Nunca alterar schema de forma destrutiva sem necessidade clara e plano explícito.
 
-// Quantidade (até 8 casas decimais para crypto/metais)
-export const formatQty = (v: number, decimals = 2) =>
-  new Intl.NumberFormat('pt-BR', { minimumFractionDigits: decimals, maximumFractionDigits: 8 }).format(v);
-```
+## Backend
+Toda regra crítica deve existir no backend. O backend é a fonte de verdade para:
+- autenticação;
+- autorização;
+- validação;
+- prevenção de duplicidade;
+- integridade relacional;
+- regras patrimoniais;
+- auditoria;
+- tratamento de erros.
 
----
+Ao criar endpoints, actions ou services:
+- definir claramente entrada, validação, processamento e retorno;
+- retornar erros previsíveis e seguros;
+- nunca expor detalhes internos desnecessários;
+- isolar regras complexas em serviços reutilizáveis;
+- preferir código explícito a lógica implícita difícil de auditar.
 
-## Regras de Desenvolvimento
+## Frontend
+O frontend deve priorizar clareza, consistência e robustez.
 
-1. **Backlog obrigatório**: Antes de implementar, consulte e atualize `backlog.md`
-2. **Commits semânticos**: `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`
-3. **Nunca commitar**: `.env.local`, segredos, `node_modules`
-4. **Testes**: Ao menos testes de unidade para lógica de negócio (PM, rebalanceamento)
-5. **Acessibilidade**: ARIA labels, contraste WCAG AA, keyboard navigation
-6. **Loading states**: `loading.tsx` e `<Suspense>` com skeleton em TODAS as rotas com dados
-7. **Erros**: `error.tsx` e `not-found.tsx` em todas as rotas dinâmicas
-8. **Contexto pequeno**: Criar tarefas pequenas no backlog para evitar contextos grandes
+Cada tela nova deve considerar:
+- loading state;
+- empty state;
+- error state;
+- feedback de sucesso e falha;
+- navegação coerente;
+- responsividade;
+- acessibilidade mínima;
+- componentes reutilizáveis;
+- formulários com mensagens claras.
 
----
+Para tabelas e listagens, sempre considerar:
+- busca;
+- filtros;
+- ordenação;
+- paginação;
+- ações contextuais;
+- estados vazios;
+- desempenho com listas maiores.
 
-## Schema Existente no Banco
+Para dashboards:
+- destacar patrimônio total;
+- destacar alocação por tipo de ativo;
+- destacar evolução patrimonial;
+- destacar movimentações recentes;
+- destacar alertas e vencimentos;
+- destacar concentração por instituição ou categoria.
 
-```sql
--- JÁ IMPLEMENTADO (não alterar sem migration):
-clientes (id UUID, nome, documento, email, created_at)
-instituicoes (id UUID, nome, cnpj, tipo, created_at)
-contas_corretora (id UUID, cliente_id, instituicao_id, numero_conta, apelido)
-tipos_investimento (id SERIAL, nome, descricao)
-ativos (id UUID, codigo_negociacao, nome_produto, tipo_papel, tipo_investimento_id, emissor)
-posicoes_diarias (id UUID, conta_id, ativo_id, data_referencia, quantidade, preco_fechamento, valor_liquido, hash_linha)
-View: resumo_carteira
-```
+## Acessibilidade e responsividade
+Toda implementação visual deve funcionar em desktop, tablet e mobile. O sistema não pode depender apenas de desktop para operar bem.
 
----
+Sempre garantir:
+- foco visível;
+- labels e aria quando necessário;
+- navegação por teclado;
+- contraste adequado;
+- tamanhos de toque usáveis;
+- leitura confortável;
+- layout adaptável sem quebra;
+- tabelas com tratamento responsivo.
 
-## Ambiente
+Uma interface bonita que quebra no mobile é considerada incompleta.
 
-```env
-DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/projinvest
-NEXTAUTH_SECRET=<gerar: openssl rand -base64 32>
-NEXTAUTH_URL=http://localhost:3000
-GOOGLE_CLIENT_ID=<opcional>
-GOOGLE_CLIENT_SECRET=<opcional>
-```
+## Qualidade de código
+Toda alteração deve priorizar:
+- legibilidade;
+- coesão;
+- baixo acoplamento;
+- tipagem forte;
+- nomes claros;
+- previsibilidade;
+- facilidade de manutenção.
 
-```bash
-npm run dev          # Desenvolvimento localhost:3000
-npm run build        # Build produção
-npm run lint         # ESLint
-npm run db:migrate   # Executar migrations SQL
-```
+Evitar:
+- duplicação de lógica;
+- componentes gigantes;
+- queries espalhadas sem padrão;
+- validações inconsistentes;
+- regras de negócio misturadas na camada visual;
+- efeitos colaterais ocultos;
+- soluções improvisadas sem rastreabilidade.
 
-*Leia estas instruções antes de cada tarefa. Sempre consulte e atualize o `backlog.md`.*
+## Fluxo obrigatório de trabalho por demanda
+Para cada demanda, organize a execução assim:
+1. objetivo;
+2. contexto atual;
+3. arquivos envolvidos;
+4. impacto por camada;
+5. tarefa principal;
+6. subtarefas;
+7. critérios de aceite;
+8. implementação;
+9. validação;
+10. pendências ou riscos.
+
+Sempre quebrar demandas grandes em subtarefas executáveis.
+
+Exemplo de subtarefas:
+- ajustar schema e migration;
+- implementar serviço e validações;
+- criar endpoint ou server action;
+- atualizar componentes e tela;
+- adicionar logs e auditoria;
+- validar duplicidade;
+- testar estados e responsividade.
+
+## Critérios de aceite mínimos
+Nenhuma tarefa deve ser considerada concluída sem verificar:
+- funcionamento real do fluxo principal;
+- integridade dos dados;
+- ausência de duplicidade indevida;
+- existência de tratamento de erro;
+- respeito às permissões;
+- logs de auditoria quando aplicável;
+- responsividade;
+- consistência visual;
+- lint e tipagem sem erros;
+- ausência de regressão evidente.
+
+## Correção de código existente
+Ao corrigir código já existente:
+- primeiro entender a intenção original;
+- depois localizar a causa real do problema;
+- corrigir com o menor impacto possível;
+- refatorar apenas o necessário;
+- preservar compatibilidade quando possível;
+- atualizar código relacionado se a correção afetar contratos ou comportamento.
+
+Não mascarar bug com remendos visuais ou validações superficiais.
+
+## Documentação e atualização do projeto
+Sempre que uma mudança alterar comportamento relevante:
+- atualizar documentação pertinente;
+- atualizar backlog/status quando fizer sentido;
+- registrar decisões arquiteturais importantes;
+- manter instruções coerentes com o estado real do projeto.
+
+## Como agir em caso de dúvida
+Se existir qualquer ambiguidade funcional, arquitetural ou de segurança:
+- não assumir silenciosamente;
+- esclarecer primeiro;
+- propor opções com trade-offs;
+- seguir pela alternativa mais segura e sustentável.
+
+## Regra final de execução
+Este projeto deve ser desenvolvido e corrigido com foco em:
+- sistema funcional;
+- sistema seguro;
+- sistema elegante;
+- sistema auditável;
+- sistema responsivo;
+- sistema sustentável;
+- sistema sem falhas evitáveis.
+
+Sempre priorize confiabilidade, segurança e clareza. A experiência deve parecer a de uma plataforma patrimonial séria e madura.

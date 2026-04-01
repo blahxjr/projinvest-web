@@ -65,93 +65,46 @@ export default function NovoAtivoPage() {
 
       router.push("/ativos");
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || "Erro ao salvar ativo.");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message || "Erro ao salvar ativo.");
+      } else {
+        setError("Erro ao salvar ativo.");
+      }
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <div style={{ maxWidth: "840px" }}>
-      <h1 style={{ fontSize: "1.5rem", fontWeight: 600 }}>Novo ativo</h1>
-      <p style={{ marginTop: "4px", color: "#6b7280" }}>
-        Cadastre um ativo financeiro para uso nas posições.
-      </p>
+    <div className="max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold text-sky-300 mb-2">Novo ativo</h1>
+      <p className="text-slate-300 mb-6">Cadastre um ativo financeiro para uso nas posições.</p>
 
-      <div
-        style={{
-          marginTop: "24px",
-          background: "#ffffff",
-          borderRadius: "16px",
-          padding: "20px 24px",
-          boxShadow: "0 10px 30px rgba(15, 23, 42, 0.08)",
-          border: "1px solid #e5e7eb",
-        }}
-      >
+      <div className="panel">
         {error && (
-          <div
-            style={{
-              marginBottom: "16px",
-              padding: "10px 12px",
-              borderRadius: "10px",
-              background: "#fef2f2",
-              color: "#b91c1c",
-              fontSize: "0.875rem",
-              border: "1px solid #fecaca",
-            }}
-          >
+          <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "16px 20px",
-            }}
-          >
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label
-                htmlFor="codigo"
-                style={{
-                  display: "block",
-                  marginBottom: "4px",
-                  fontWeight: 500,
-                  fontSize: "0.9rem",
-                }}
-              >
+              <label htmlFor="codigo" className="block mb-1 text-sm font-semibold text-slate-200">
                 Código de negociação *
               </label>
               <input
                 id="codigo"
                 type="text"
                 value={codigoNegociacao}
-                onChange={(e) =>
-                  setCodigoNegociacao(e.target.value.toUpperCase())
-                }
-                style={{
-                  width: "100%",
-                  padding: "9px 11px",
-                  borderRadius: "10px",
-                  border: "1px solid #d1d5db",
-                  fontSize: "0.9rem",
-                }}
+                onChange={(e) => setCodigoNegociacao(e.target.value.toUpperCase())}
+                className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400"
               />
             </div>
 
             <div>
-              <label
-                htmlFor="nomeProduto"
-                style={{
-                  display: "block",
-                  marginBottom: "4px",
-                  fontWeight: 500,
-                  fontSize: "0.9rem",
-                }}
-              >
+              <label htmlFor="nomeProduto" className="block mb-1 text-sm font-semibold text-slate-200">
                 Nome do produto *
               </label>
               <input
@@ -159,40 +112,19 @@ export default function NovoAtivoPage() {
                 type="text"
                 value={nomeProduto}
                 onChange={(e) => setNomeProduto(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "9px 11px",
-                  borderRadius: "10px",
-                  border: "1px solid #d1d5db",
-                  fontSize: "0.9rem",
-                }}
+                className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400"
               />
             </div>
 
             <div>
-              <label
-                htmlFor="tipoInvestimento"
-                style={{
-                  display: "block",
-                  marginBottom: "4px",
-                  fontWeight: 500,
-                  fontSize: "0.9rem",
-                }}
-              >
+              <label htmlFor="tipoInvestimento" className="block mb-1 text-sm font-semibold text-slate-200">
                 Tipo de investimento
               </label>
               <select
                 id="tipoInvestimento"
                 value={tipoInvestimentoId}
                 onChange={(e) => setTipoInvestimentoId(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "9px 11px",
-                  borderRadius: "10px",
-                  border: "1px solid #d1d5db",
-                  fontSize: "0.9rem",
-                  background: "#fff",
-                }}
+                className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400"
               >
                 <option value="">Selecione</option>
                 {tiposInvestimento.map((t) => (
@@ -204,15 +136,7 @@ export default function NovoAtivoPage() {
             </div>
 
             <div>
-              <label
-                htmlFor="tipoPapel"
-                style={{
-                  display: "block",
-                  marginBottom: "4px",
-                  fontWeight: 500,
-                  fontSize: "0.9rem",
-                }}
-              >
+              <label htmlFor="tipoPapel" className="block mb-1 text-sm font-semibold text-slate-200">
                 Tipo de papel
               </label>
               <input
@@ -220,26 +144,12 @@ export default function NovoAtivoPage() {
                 type="text"
                 value={tipoPapel}
                 onChange={(e) => setTipoPapel(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "9px 11px",
-                  borderRadius: "10px",
-                  border: "1px solid #d1d5db",
-                  fontSize: "0.9rem",
-                }}
+                className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400"
               />
             </div>
 
-            <div style={{ gridColumn: "1 / span 2" }}>
-              <label
-                htmlFor="emissor"
-                style={{
-                  display: "block",
-                  marginBottom: "4px",
-                  fontWeight: 500,
-                  fontSize: "0.9rem",
-                }}
-              >
+            <div className="md:col-span-2">
+              <label htmlFor="emissor" className="block mb-1 text-sm font-semibold text-slate-200">
                 Emissor
               </label>
               <input
@@ -247,55 +157,27 @@ export default function NovoAtivoPage() {
                 type="text"
                 value={emissor}
                 onChange={(e) => setEmissor(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "9px 11px",
-                  borderRadius: "10px",
-                  border: "1px solid #d1d5db",
-                  fontSize: "0.9rem",
-                }}
+                className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400"
               />
             </div>
           </div>
 
-          <div
-            style={{
-              marginTop: "24px",
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: "8px",
-            }}
-          >
+          <div className="mt-6 flex justify-end gap-2">
             <button
               type="button"
               onClick={() => router.push("/ativos")}
-              style={{
-                padding: "8px 16px",
-                borderRadius: "999px",
-                border: "1px solid #d1d5db",
-                background: "#f9fafb",
-                color: "#111827",
-                fontWeight: 500,
-                fontSize: "0.9rem",
-                cursor: "pointer",
-              }}
+              className="rounded-full border border-slate-600 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-slate-700"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              style={{
-                padding: "8px 18px",
-                borderRadius: "999px",
-                border: "none",
-                background: isSubmitting ? "#9ca3af" : "#2563eb",
-                color: "#fff",
-                fontWeight: 600,
-                fontSize: "0.9rem",
-                cursor: isSubmitting ? "default" : "pointer",
-                boxShadow: "0 8px 20px rgba(37, 99, 235, 0.35)",
-              }}
+              className={`rounded-full px-4 py-2 text-sm font-semibold text-white ${
+                isSubmitting
+                  ? "bg-slate-500 cursor-not-allowed"
+                  : "bg-sky-500 hover:bg-sky-400"
+              }`}
             >
               {isSubmitting ? "Salvando..." : "Salvar ativo"}
             </button>

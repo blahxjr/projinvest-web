@@ -45,6 +45,18 @@ export async function POST(req: Request) {
       );
     }
 
+    const exists = await pool.query(
+      `SELECT id FROM contas_corretora WHERE cliente_id = $1 AND instituicao_id = $2 AND numero_conta = $3 LIMIT 1`,
+      [clienteId, instituicaoId, numeroConta.trim()]
+    );
+
+    if ((exists.rowCount ?? 0) > 0) {
+      return NextResponse.json(
+        { message: "Conta já cadastrada para essa instituição e cliente." },
+        { status: 409 }
+      );
+    }
+
     const result = await pool.query(
       `INSERT INTO contas_corretora (cliente_id, instituicao_id, numero_conta, apelido)
        VALUES ($1, $2, $3, $4)

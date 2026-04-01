@@ -71,8 +71,12 @@ export default function NovaContaPage() {
 
       router.push("/contas");
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || "Erro ao salvar conta.");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message || "Erro ao salvar conta.");
+      } else {
+        setError("Erro ao salvar conta.");
+      }
     } finally {
       setIsSubmitting(false);
     }

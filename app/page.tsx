@@ -17,7 +17,8 @@ export default async function Home() {
     "SELECT COUNT(*)::int AS total FROM posicoes_diarias"
   );
 
-  const tipos = tiposResult.rows;
+  type TipoInvestimento = { id: number; nome: string; descricao: string };
+  const tipos: TipoInvestimento[] = tiposResult.rows;
   const totalClientes = clientesResult.rows[0]?.total ?? 0;
   const totalAtivos = ativosResult.rows[0]?.total ?? 0;
   const totalPosicoes = posicoesResult.rows[0]?.total ?? 0;
@@ -48,7 +49,7 @@ export default async function Home() {
         <section className="rounded-xl border border-white/10 bg-slate-800 p-6 shadow-lg">
           <h2 className="text-xl font-semibold text-sky-300 mb-3">Tipos de investimento</h2>
           <ul className="space-y-2">
-            {tipos.map((tipo: any) => (
+            {tipos.map((tipo: TipoInvestimento) => (
               <li key={tipo.id} className="rounded-lg border border-white/5 bg-slate-900 p-3">
                 <span className="font-semibold text-slate-100">{tipo.nome}</span>
                 <span className="text-slate-400"> - {tipo.descricao}</span>

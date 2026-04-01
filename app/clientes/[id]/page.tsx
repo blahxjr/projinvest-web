@@ -1,7 +1,29 @@
+import Link from "next/link";
+import DeleteButton from "../../components/delete-button";
 import { pool } from "../../../lib/db";
 
 type PageProps = {
   params: { id: string };
+};
+
+type ClienteConta = {
+  id: string;
+  numero_conta: string;
+  apelido: string | null;
+  instituicao_nome: string;
+  created_at: string;
+};
+
+type ClientePosicao = {
+  id: string;
+  data_referencia: string;
+  quantidade: number;
+  valor_liquido: number;
+  preco_fechamento: number | null;
+  conta: string;
+  codigo_negociacao: string | null;
+  nome_produto: string;
+  tipo_investimento: string | null;
 };
 
 export default async function ClienteDetalhePage({ params }: PageProps) {
@@ -45,7 +67,7 @@ export default async function ClienteDetalhePage({ params }: PageProps) {
     [clienteId]
   );
 
-  const contas = contasResult.rows;
+  const contas: ClienteConta[] = contasResult.rows;
 
   // 3) Posições do cliente
   const posicoesResult = await pool.query(
@@ -70,7 +92,7 @@ export default async function ClienteDetalhePage({ params }: PageProps) {
     [clienteId]
   );
 
-  const posicoes = posicoesResult.rows;
+  const posicoes: ClientePosicao[] = posicoesResult.rows;
 
   // 4) KPIs da carteira do cliente
   const kpiResult = await pool.query(
@@ -119,6 +141,16 @@ export default async function ClienteDetalhePage({ params }: PageProps) {
         </div>
 
         <div style={{ textAlign: "right" }}>
+          <div className="mb-2 flex justify-end gap-2">
+            <Link
+              href={`/clientes/${clienteId}/edit`}
+              className="rounded-md border border-sky-400 bg-sky-600 px-3 py-1 text-xs font-semibold text-white hover:bg-sky-500"
+            >
+              Editar
+            </Link>
+            <DeleteButton entity="clientes" id={clienteId} label="Excluir" />
+          </div>
+
           <p style={{ fontSize: "0.85rem", opacity: 0.8 }}>
             Valor total da carteira
           </p>
@@ -240,7 +272,7 @@ export default async function ClienteDetalhePage({ params }: PageProps) {
             </tr>
           </thead>
           <tbody>
-            {contas.map((conta: any) => (
+            {contas.map((conta: ClienteConta) => (
               <tr key={conta.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
                 <td style={{ padding: "8px" }}>{conta.apelido || "-"}</td>
                 <td style={{ padding: "8px" }}>{conta.numero_conta}</td>
@@ -306,7 +338,7 @@ export default async function ClienteDetalhePage({ params }: PageProps) {
             </tr>
           </thead>
           <tbody>
-            {posicoes.map((p: any) => (
+            {posicoes.map((p: ClientePosicao) => (
               <tr key={p.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
                 <td style={{ padding: "8px" }}>
                   {new Date(p.data_referencia).toLocaleDateString("pt-BR")}

@@ -22,6 +22,18 @@ export async function POST(req: Request) {
       );
     }
 
+    const exists = await pool.query(
+      `SELECT id FROM ativos WHERE codigo_negociacao = $1 LIMIT 1`,
+      [codigoNegociacao.trim()]
+    );
+
+    if ((exists.rowCount ?? 0) > 0) {
+      return NextResponse.json(
+        { message: "Ativo já cadastrado com esse código de negociação." },
+        { status: 409 }
+      );
+    }
+
     const result = await pool.query(
       `INSERT INTO ativos (
          codigo_negociacao,

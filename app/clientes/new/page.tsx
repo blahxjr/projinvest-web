@@ -41,8 +41,12 @@ export default function NovoClientePage() {
 
       router.push("/clientes");
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || "Erro ao salvar cliente.");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message || "Erro ao salvar cliente.");
+      } else {
+        setError("Erro ao salvar cliente.");
+      }
     } finally {
       setIsSubmitting(false);
     }

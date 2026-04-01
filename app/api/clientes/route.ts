@@ -38,6 +38,19 @@ export async function POST(req: Request) {
       );
     }
 
+    // Verificação de unicidade em aplicativo (defesa em profundidade)
+    const duplicated = await pool.query(
+      `SELECT id FROM clientes WHERE email = $1 OR documento = $2 LIMIT 1`,
+      [email?.trim() || null, documento?.trim() || null]
+    );
+
+    if ((duplicated.rowCount ?? 0) > 0) {
+      return NextResponse.json(
+        { message: "Já existe cliente com mesmo email ou documento." },
+        { status: 409 }
+      );
+    }
+
     const result = await pool.query(
       `INSERT INTO clientes (nome, documento, email)
        VALUES ($1, $2, $3)

@@ -278,9 +278,13 @@ export async function POST(req: Request) {
         } else {
           ignorados++;
         }
-      } catch (erroInterno: any) {
+      } catch (erroInterno) {
         ignorados++;
-        erros.push(`Linha ${i + 1}: ${erroInterno.message}`);
+        if (erroInterno instanceof Error) {
+          erros.push(`Linha ${i + 1}: ${erroInterno.message}`);
+        } else {
+          erros.push(`Linha ${i + 1}: erro desconhecido`);
+        }
       }
     }
 
@@ -295,12 +299,12 @@ export async function POST(req: Request) {
       ativosCriados,
       erros: erros.slice(0, 20),
     });
-  } catch (error: any) {
+  } catch (error) {
     await client.query("ROLLBACK");
     return Response.json(
       {
         ok: false,
-        error: error.message || "Erro ao processar arquivo.",
+        error: error instanceof Error ? error.message : "Erro ao processar arquivo.",
       },
       { status: 500 }
     );

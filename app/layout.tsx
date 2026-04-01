@@ -17,6 +17,19 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   );
 }
 
+function MobileNav() {
+  return (
+    <nav className="flex flex-wrap gap-2 overflow-x-auto rounded-xl border border-slate-700 bg-slate-900/80 p-2 text-xs md:hidden">
+      <NavLink href="/">Dashboard</NavLink>
+      <NavLink href="/clientes">Clientes</NavLink>
+      <NavLink href="/contas">Contas</NavLink>
+      <NavLink href="/ativos">Ativos</NavLink>
+      <NavLink href="/posicoes">Posições</NavLink>
+      <NavLink href="/importacao">Importação</NavLink>
+    </nav>
+  );
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,16 +38,16 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
-        <div className="flex min-h-screen bg-[radial-gradient(circle_at_top,#0d1b34_0%,#020617_45%,#020617_100%)] text-slate-100">
-          <aside className="w-[260px] border-r border-slate-800 bg-gradient-to-b from-[#0f172a] via-[#111827] to-[#0b1121] p-6">
+        <div className="min-h-screen flex bg-[radial-gradient(circle_at_top,#0d1b34_0%,#020617_45%,#020617_100%)] text-slate-100">
+          <aside className="hidden md:flex md:flex-col md:w-72 lg:w-64 border-r border-slate-800 bg-gradient-to-b from-[#0f172a] via-[#111827] to-[#0b1121] p-6 min-h-screen sticky top-0">
             <div className="mb-8">
-              <div className="inline-flex items-center gap-2 rounded-xl bg-slate-800/40 px-3 py-2 text-sm font-bold text-sky-300">
+              <div className="inline-flex items-center gap-2 rounded-xl bg-slate-800/50 px-3 py-2 text-sm font-bold text-sky-300 shadow-sm">
                 <span>⚡</span>
                 <span>ProjInvest</span>
               </div>
             </div>
 
-            <nav className="space-y-2">
+            <nav className="space-y-2 flex-1">
               <NavLink href="/">Dashboard</NavLink>
               <NavLink href="/clientes">Clientes</NavLink>
               <NavLink href="/contas">Contas</NavLink>
@@ -49,7 +62,13 @@ export default function RootLayout({
             </div>
           </aside>
 
-          <main className="flex-1 p-6 lg:p-8">{children}</main>
+          <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-hidden">
+            <div className="md:hidden mb-4">
+              <MobileNav />
+            </div>
+
+            <div className="mx-auto w-full max-w-7xl">{children}</div>
+          </main>
         </div>
       </body>
     </html>
